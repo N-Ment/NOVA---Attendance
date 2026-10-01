@@ -15,6 +15,6 @@ vm.runInContext(source,ctx);
   const result=await vm.runInContext('NovaFace.start',ctx)(video,()=>{});
   assert(Array.isArray(result)&&result.length===128);
   assert(Math.abs(result[0]-0.5)<1e-9);
-  assert.strictEqual(calls,2);assert.strictEqual(loaded,3);assert.strictEqual(stops,1);
-  console.log('PASS face descriptor capture, two samples, model loading, camera cleanup');
+  assert.strictEqual(calls,1);assert.strictEqual(loaded,3);assert.strictEqual(stops,1);
+  console.log('PASS face descriptor capture, one attendance sample, model loading, camera cleanup');
 })().catch(error=>{console.error(error);process.exit(1)});

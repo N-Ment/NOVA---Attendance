@@ -1,0 +1,11 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const storage=()=>{const values=new Map();return {getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k)};};
+const localStorage=storage(),sessionStorage=storage();
+const context=vm.createContext({window:{NOVA_APPS_SCRIPT_URL:''},localStorage,sessionStorage});
+vm.runInContext(fs.readFileSync('public/js/api.js','utf8'),context);
+const api=vm.runInContext('NovaApi',context);
+api.setToken('remembered',true);assert.strictEqual(localStorage.getItem('nova_hr_token'),'remembered');
+sessionStorage.removeItem('nova_hr_token');assert.strictEqual(api.token(),'remembered');
+api.setToken('temporary',false);assert.strictEqual(api.token(),'temporary');assert.strictEqual(localStorage.getItem('nova_hr_token'),null);
+api.clearToken();assert.strictEqual(api.token(),'');
+console.log('PASS remembered and temporary login sessions');

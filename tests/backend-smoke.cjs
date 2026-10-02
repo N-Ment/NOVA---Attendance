@@ -9,8 +9,11 @@ function thaiFormat(d,_zone,fmt){const parts=Object.fromEntries(new Intl.DateTim
 const context=vm.createContext({console,Date:FakeDate,Math,JSON,String,Number,Boolean,Set,Object,Array,RegExp,Error,Logger:{log:x=>logs.push(x)},SpreadsheetApp:{getActiveSpreadsheet:()=>db,openById:()=>db,create:()=>db,flush:()=>{}},PropertiesService:{getScriptProperties:()=>({getProperty:k=>props.get(k)||null,setProperty:(k,v)=>props.set(k,v),deleteProperty:k=>props.delete(k)})},LockService:{getScriptLock:()=>({waitLock:()=>{},releaseLock:()=>{}})},CacheService:{getScriptCache:()=>({put:(k,v)=>cache.set(k,v),get:k=>cache.get(k)||null,remove:k=>cache.delete(k)})},Utilities:{getUuid:()=>crypto.randomUUID(),computeDigest:(_,s)=>[...crypto.createHash('sha256').update(s).digest()].map(v=>v>127?v-256:v),DigestAlgorithm:{SHA_256:'SHA_256'},formatDate:thaiFormat},ContentService:{MimeType:{JSON:'json'},createTextOutput:x=>({text:x,setMimeType(){return this;}})}});
 for(const f of ['Setup','Util','Code','Attendance','Leave','Users','Face','Calendar'])vm.runInContext(fs.readFileSync(`apps-script/${f}.gs`,'utf8'),context,{filename:f+'.gs'});
 const call=(action,payload={},token='')=>JSON.parse(vm.runInContext('doPost',context)({postData:{contents:JSON.stringify({action,payload,token})}}).text);
-const scan=(descriptor,token='')=>{const identified=call(token?'identifyFace':'publicIdentify',{descriptor},token);assert(identified.ok,identified.error);const result=call(token?'confirmFace':'publicConfirm',{pendingToken:identified.data.pendingToken},token);assert(result.ok,result.error);assert(!call(token?'confirmFace':'publicConfirm',{pendingToken:identified.data.pendingToken},token).ok);return result;};
-const setup=vm.runInContext('setupAll()',context);assert(setup.ok);assert(db.getSheetByName('Attendance'));assert(db.getSheetByName('Accounts'));assert.strictEqual(db.getSheetByName('Attendance').getRange(1,1,1,15).getValues()[0][0],'ชื่อพนักงาน');
+const location={latitude:13.638781660954331,longitude:100.39297630086362,accuracy:10};
+const scan=(descriptor,token='')=>{const identified=call(token?'identifyFace':'publicIdentify',{descriptor,location},token);assert(identified.ok,identified.error);const result=call(token?'confirmFace':'publicConfirm',{pendingToken:identified.data.pendingToken,location},token);assert(result.ok,result.error);assert(!call(token?'confirmFace':'publicConfirm',{pendingToken:identified.data.pendingToken,location},token).ok);return result;};
+const setup=vm.runInContext('setupAll()',context);assert(setup.ok);
+assert.strictEqual(vm.runInContext("novaShiftOvertime_('2026-10-02','07:41','18:16',{'เวลาเริ่ม':'09:00','เวลาสิ้นสุด':'18:00'})",context),0.27);
+assert.strictEqual(vm.runInContext("novaShiftOvertime_('2026-10-02','07:41','17:59',{'เวลาเริ่ม':'09:00','เวลาสิ้นสุด':'18:00'})",context),0);assert(db.getSheetByName('Attendance'));assert(db.getSheetByName('Accounts'));assert.strictEqual(db.getSheetByName('Attendance').getRange(1,1,1,15).getValues()[0][0],'ชื่อพนักงาน');
 const owner=call('login',{userId:'OWNER',pin:setup.ownerPin});assert(owner.ok,owner.error);const ot=owner.data.token;
 const added=call('saveEmployee',{userId:'NV001',name:'ทดสอบ ระบบ',nickname:'ทดสอบ',shiftId:'NORMAL',role:'employee'},ot);assert(added.ok,added.error);
 const manager=call('saveEmployee',{userId:'MGR01',name:'หัวหน้าแผนก',nickname:'หัวหน้า',shiftId:'NORMAL',role:'manager'},ot);assert(manager.ok,manager.error);
@@ -50,7 +53,7 @@ assert(!call('requestLeave',{typeId:'WEDDING',start:'2026-11-01',end:'2026-11-01
 assert(!call('saveLeaveType',{id:'ANNUAL',name:'ลาพักผ่อน',days:6,paid:true,status:'ใช้งาน'},ot).ok);
 assert(!call('saveLeaveType',{id:'ANNUAL',name:'ลาพักร้อน',days:6,paid:true,status:'ใช้งาน'},et).ok);
 assert(!call('requestLeave',{typeId:'ANNUAL',start:'2026-02-31',end:'2026-02-31',days:1},et).ok);
-assert(!call('adjustAttendance',{id:row.id,reason:'ทดสอบ',ot:{'1.0':25,'1.5':0,'2.0':0,'3.0':0}},ot).ok);
+assert(call('adjustAttendance',{id:row.id,reason:'ทดสอบ',ot:{'1.0':25,'1.5':0,'2.0':0,'3.0':0}},ot).ok);
 assert(call('saveSettings',{'OT 1.5x':2},ot).ok);
 assert(!call('saveSettings',{'OT 1.5x':99},ot).ok);
 const dayOff=call('requestDayOff',{userId:'NV001',date:'2026-10-02',note:'หยุด'},et);assert(dayOff.ok,dayOff.error);

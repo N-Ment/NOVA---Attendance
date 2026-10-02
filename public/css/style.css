@@ -67,3 +67,9 @@ input[type="date"],input[type="month"],input[type="time"]{min-width:0;max-width:
 .inline-check input[type=checkbox]{width:auto;flex:none;accent-color:#c98861}
 
 .kiosk-clock{width:126px;height:126px;border-radius:50%;border:3px solid #ce946f;background:radial-gradient(circle,#473127,#251d19);box-shadow:0 0 0 7px #ce946f1a,0 12px 32px #0005;display:flex;flex-direction:column;justify-content:center;align-items:center;margin:0 auto 24px;color:#fff}.kiosk-clock strong{font-size:31px;line-height:1.1;font-variant-numeric:tabular-nums}.kiosk-clock small{font-size:12px;color:#dcb493;margin-top:5px}
+
+/* Full viewport idle watch. The browser's own fullscreen permission remains user controlled. */
+.sleep-screen{position:fixed;inset:0;z-index:50;width:100vw;height:100dvh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:clamp(18px,4vh,35px);background:radial-gradient(circle at 50% 40%,#2b1813 0,#0c0909 68%);border:0;color:#fff;padding:24px;overflow:hidden}
+.sleep-watch{width:min(83vw,70dvh,560px);height:min(83vw,70dvh,560px);aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;line-height:.85;border:clamp(7px,1.2vw,15px) solid #d4a788;box-shadow:inset 0 0 0 7px #16100e,0 0 0 7px #49372c,0 0 0 12px #211914,0 28px 60px #0009;background:radial-gradient(circle at 25% 20%,#f4ac78 0,#e46836 38%,#9b3025 78%,#551e1c 100%);text-shadow:0 7px 13px #61251c70;font-variant-numeric:tabular-nums}
+.sleep-hour,.sleep-minute{display:block;font-size:clamp(72px,19vw,180px);font-weight:800;letter-spacing:-.08em;padding-right:.08em}
+.sleep-minute{margin-top:.05em}.sleep-date{font-size:clamp(14px,3.4vw,26px);line-height:1.2;font-weight:700;margin-top:clamp(12px,3vh,28px);letter-spacing:.06em}.sleep-hint{color:#d9b39c;font-size:clamp(13px,2vw,18px);font-weight:500}

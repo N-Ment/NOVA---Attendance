@@ -59,3 +59,9 @@ input[type="date"],input[type="month"],input[type="time"]{min-width:0;max-width:
 .face-confirm .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
 .face-confirm .actions button{min-width:0;white-space:normal;line-height:1.3}
 @media(max-width:380px){.face-confirm .actions{grid-template-columns:1fr}}
+
+.logo-image{width:39px;height:39px;flex:0 0 39px;border-radius:13px;object-fit:cover;background:#ffffff}
+.brand-preview{display:flex;align-items:center;justify-content:center;width:88px;height:88px;border:1px solid #584238;border-radius:14px;background:#302621}
+.brand-preview img{width:100%;height:100%;object-fit:contain;border-radius:14px}
+.inline-check{display:flex!important;flex-direction:row!important;align-items:center;gap:8px}
+.inline-check input[type=checkbox]{width:auto;flex:none;accent-color:#c98861}

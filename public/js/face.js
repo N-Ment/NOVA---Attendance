@@ -26,7 +26,8 @@ const NovaFace=(()=>{
       video.srcObject=stream;await video.play();
       onStatus('กำลังโหลดโมเดลใบหน้า…');
       const modelError=await ready;if(modelError)throw modelError;if(!active)throw new Error('ยกเลิกการสแกน');
-      for(let remaining=5;remaining>0;remaining--){
+      const delay=Math.max(0,Math.min(15,Number(options.delaySeconds??5)||0));
+      for(let remaining=delay;remaining>0;remaining--){
         onStatus(`กล้องพร้อม เริ่มสแกนใน ${remaining} วินาที`);
         await pause(1000);if(!active)throw new Error('ยกเลิกการสแกน');
       }
